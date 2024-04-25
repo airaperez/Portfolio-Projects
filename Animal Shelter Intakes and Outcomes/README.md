@@ -21,10 +21,21 @@ Using SQL and Python, I performed an exploratory data analysis on the characteri
 
 
 
+# Table of Contents
+1. [Data Description](#data-description)
+2. [Data Quality Checking](#data-quality-checking)
+3. [Data Cleaning](#data-cleaning)
+4. [Exploratory Data Analysis](#exploratory-data-analysis)
+   1. [Overview of Shelter Operations](#overview-of-shelter-operations)
+   2. [Exploration by Animal Type](#exploration-by-animal-type)
+   3. [Analyzing the Animals' Duration of Stay](#analyzing-the-animals-duration-of-stay)
+   4. [Analyzing the Animals' Intake Conditions](#analyzing-the-animals-intake-conditions)
+
+
 
 
 <!---     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -->
-## Data Description
+# Data Description
 The data is sourced from the [Austin Open Data Portal](https://data.austintexas.gov/), retrieved last April 9, 2024. The following two tables were used for the analysis:
 * **Austin Animal Center Intakes**: this contains the records of the animals as they arrive at the shelter (161,099 rows)
 * **Austin Animal Center Outcomes**: this contains the records of the animals as they leave the shelter (161,228 rows)
@@ -60,7 +71,7 @@ SELECT TOP 5 * FROM outcomes;
 <!-- DATA QUALITY CHECKS -->
 <!--========================================================================================================================-->
 
-## Data Quality Checking
+# Data Quality Checking
 
 <!---     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -->
 ### Checking the uniqueness of records
@@ -280,7 +291,7 @@ It can also be observed that the `outcomes` table has null values in the `Outcom
 <!-- DATA CLEANING -->
 <!--========================================================================================================================-->
 
-## Data Cleaning
+# Data Cleaning
 
 <!---     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -->
 ### Adding new columns
@@ -549,7 +560,7 @@ WHERE outcomes.Animal_Index = stay.index_key;
 <!-- EXPLORATORY DATA ANALYSIS -->
 <!--========================================================================================================================-->
 
-## Exploratory Data Analysis
+# Exploratory Data Analysis
 
 <!---     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -->
 ### Overview of Shelter Operations
