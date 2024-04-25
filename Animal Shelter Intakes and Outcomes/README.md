@@ -8,11 +8,13 @@
 
 ###### <p align="center"> <i>Copyright © 2024 Aira Perez. All rights reserved.</i> </p>
 
+
 -----
+
 
 Using SQL and Python, I performed an exploratory data analysis on the characteristics of the animals that were taken in and released from the [Austin Animal Center](https://www.austintexas.gov/austin-animal-center), the largest no-kill animal shelter in the United States.
 
-|Technology|Skills Used|
+|Tool|Skills Used|
 |---|---|
 |MS SQL Server|Data cleaning, data exploration, table joins, updating tables, windows function, Common Table Expressions (CTE), aggregation|
 |Python|Pandas, Matplotlib, Pandasql (SQLite Query Language), data manipulation, data visualization|
@@ -125,7 +127,7 @@ FROM outcome_counts;
 
 It can be observed that, in both tables, there are 16,527 duplicate Animal IDs.
 
-Further, it is seen that the `outcomes` table has a few more rows than the `intakes` table. This may be because there are animals already in the shelter prior to the creation of the database, resulting in unrecorded intake data.
+Further, it is seen that the `outcomes` table has a few more rows than the `intakes` table. This may be because there were animals already in the shelter prior to the creation of the database, resulting in unrecorded intake data.
 
 
 <!---     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -----     -->
@@ -321,7 +323,7 @@ SET Animal_Index = @RowOutcome,
 
 #### 2. Entry and Exit Order
 
-Most observations from the `intakes` and `outcomes` table are paired, denoting the instance when the same animal was taken in and released from the shelter. However, it was noted earlier that there were animals that have went in and out of the shelter more than once. Thus, I added a new column to signify the number of times they have been taken in and out of the shelter. Together with `Animal_ID`, this column will serve as the primary key.
+Most observations from the `intakes` and `outcomes` table are paired, denoting the instance when the same animal was taken in and released from the shelter. However, it was noted earlier that there were animals that have went in and out of the shelter more than once. Thus, I added a new column to signify the number of times they have been taken in and out of the shelter as of the specified date, named `Entry_Order` and `Exit_Order`, respectively. This column together with `Animal_ID` will serve as the primary key.
 
 <!-------------------------------------- [[(start) TABLE OF CODE  ---------------------------------------->
 
@@ -371,7 +373,7 @@ WHERE outcomes.Animal_Index = exit_order.index_key;
 
 It was noted earlier that the `outcomes` table has a few more rows, indicating unrecorded intake data. Hence, it is possible that some of the animals that have been in the shelter multiple times also lack intake records.
 
-To check this, using `Animal_ID` and the newly created `Entry_Order` and `Exit_Order` as primary keys, the time difference between intake and outcome dates were compared. It was found that 136 records returned a negative time difference, indicating that the intake date preceded the outcome date. To rectify this, the `Entry_Order` of the 136 records was incremented by 1. 
+To check this, using `Animal_ID` and the newly created `Entry_Order` and `Exit_Order` as primary keys, the time difference between intake and outcome dates were compared. It was found that 136 records returned a negative time difference, indicating that the outcome date preceded the intake date. To correct this, the `Entry_Order` of the 136 records was incremented by 1. 
  
 ```sql
 WITH negative_duration (index_key, id, Entry_Order, Exit_Order) AS
@@ -398,7 +400,7 @@ WHERE intakes.Animal_Index = nd.index_key AND
 
 Upon inspection of the `Age_upon_Intake` and `Age_upon_Outcome` columns, it is found that no consistent format or time unit is being used. Records contained values expressed in days, weeks, months, or years, while some values were only approximates of the animal's age (ex. "-2 years", "0 year").
 
-To maintain consistency, new columns were created in both tables to categorize age groups. Values are categorized as follows:
+To maintain consistency, new columns were created in both tables to categorize age groups. The values are categorized as follows:
 * Less than a year
 * 1 to 5 years
 * 6 to 10 years
@@ -614,7 +616,7 @@ plt.show()
 ![Figure_1](https://github.com/airaperez/Portfolio-Projects/assets/110292677/599dae46-2e11-4d1f-8ce4-ed4d60480fce)
 
 
-Both intakes and releases follow a similar trend, as illustrated in the figure above. A seasonal pattern is evident in both, wherein higher numbers are commonly observed during the middle of the year and drops by the year's end. As expected, during the COVID-19 pandemic, a drastic decrease in both intakes and outcomes are observed. However, since 2021, the numbers have been starting to increase and revert to its pattern pre-pandemic.
+Both intakes and outcomes follow a similar trend, as illustrated in the figure above. A seasonal pattern is evident in both, wherein higher numbers are commonly observed during the middle of the year and drops by the year's end. As expected, during the COVID-19 pandemic, a drastic decrease in both intakes and outcomes are observed. However, since 2021, the numbers have been starting to increase and revert to its pattern pre-pandemic.
 
 #### Monthly trend of intakes and outcomes
 
@@ -675,7 +677,7 @@ plt.show()
 |![Figure_2](https://github.com/airaperez/Portfolio-Projects/assets/110292677/36c16222-e5cc-431c-a476-4d305500cc6d)|![Figure_3](https://github.com/airaperez/Portfolio-Projects/assets/110292677/4e32de36-61a5-4f67-90fa-464b254b169e)|
 |---|---|
 
-To further examine the pattern of intakes and outcomes, the distribution of both across each month was analyzed. Through the plots above, it is more evident that by the number of animals taken in and out of the shelter increases from January to July, and drops significantly by August.
+To further examine the pattern of intakes and outcomes, the distribution of the two across each month were analyzed. Through the plots above, it is more evident that the number of animals taken in and out of the shelter increases from January to July, and drops significantly by August.
 
 
 
@@ -722,7 +724,7 @@ plt.show()
 
 ![Figure_4](https://github.com/airaperez/Portfolio-Projects/assets/110292677/74af1261-feec-48fe-9979-655441aaf262)
 
-It can be observed that majority of the animals commonly handled by the shelter are cats and dogs. However, it is seen that the shelter does not cater solely to dogs and cats, as they have also handled birds, livestock, and other animals, albeit rarely.
+It can be observed that a majority of the animals commonly handled by the shelter are cats and dogs. However, it is seen that the shelter does not cater solely to dogs and cats, as they have also handled birds, livestock, and other animals, albeit rarely as compared to the common household pets.
 
 
 #### Distribution of the different intake types relative to each animal type
@@ -888,7 +890,7 @@ plt.show()
 ![Figure_10](https://github.com/airaperez/Portfolio-Projects/assets/110292677/401c74ef-11c5-4a47-8da3-eb8a11ccfd99)
 
 
-From here, it can be seen that less and less animals stay in the shelter for more than a month. It is rarer for animals to stay in the shelter for more than half a year (or approximately 180 days).
+From here, it can be seen that only a few animals stay in the shelter for more than a month. Additionally, it is rarer for animals to stay in the shelter for more than half a year, or approximately 180 days.
 
 
 #### Distribution of duration of owner reclamation
@@ -972,7 +974,7 @@ As observed in the plot above, on average, dogs and cats stay in the shelter lon
 
 #### Distribution of intake conditions
 
-Prior to analysis, the column `Intake_Condition` was cleaned, as it contained too many distinct values. In the proceeding analyses, the conditions 'Aged', 'Feral', 'Normal', 'Nursing', 'Other', 'Pregnant', 'Unknown', 'Space' were categorized as `Non-sick`, while the rest of the values were categorized as `Sick`.
+Prior to analysis, the column `Intake_Condition` was cleaned, as it contained too many distinct values. In the following analyses, the conditions 'Aged', 'Feral', 'Normal', 'Nursing', 'Other', 'Pregnant', 'Unknown', and 'Space' were categorized as `Non-sick`, while the rest of the values were categorized as `Sick`.
 
 ```python
 sick_animals = sqldf(
@@ -1044,7 +1046,7 @@ plt.show()
 
 ![Figure_16](https://github.com/airaperez/Portfolio-Projects/assets/110292677/513f03dd-8b69-48ea-90a4-048304f01da3)
 
-Across all animal groups, except livestock, there is an evident trend in the number of sick animals taken in the shelter, increasing by the middle of the year and decreasing by the end. Notably, not much sick livestock were taken to the shelter throughout the years, with the exception of a few instances during 2020, 2022, and 2023.
+Across all animal groups, except livestock, there is an evident trend in the number of sick animals taken to the shelter, increasing by the middle of the year and decreasing by the end. Notably, not much sick livestock were taken to the shelter throughout the years, with the exception of a few instances during 2020, 2022, and 2023.
 
 #### Monthly sick animal intakes
 
@@ -1078,7 +1080,7 @@ plt.show()
 
 ![Figure_17](https://github.com/airaperez/Portfolio-Projects/assets/110292677/7b9018e4-17e7-4cc0-a845-d9de794a8274)
 
-As illustrated above, the shelter commonly sees an increase in the intake of sick birds, cats, and dogs around May and June. Thus, it is recommended that the shelter conduct necessary preparations prior to these months, stocking up on medical supplies. However, it is also important to note that during March, a spike in the intake of other animal types are often seen, which emphasizes the importance of preparing earlier in the year. Lastly, the graph shows that there have only been exactly 3 sick livestock that were taken to the shelter.
+As illustrated above, the shelter commonly sees an increase in the intake of sick birds, cats, and dogs around May and June. Thus, it is recommended that the shelter conducts necessary preparations prior to these months, stocking up on medical supplies. However, it is also important to note that during March, a spike in the intake of other animal types are often seen, which emphasizes the importance of preparing earlier in the year. Lastly, the graph shows that there have only been exactly 3 sick livestock that were taken to the shelter.
 
 #### Outcomes of sick animals
 
@@ -1115,5 +1117,6 @@ plt.show()
 
 ![Figure_18](https://github.com/airaperez/Portfolio-Projects/assets/110292677/9c677a70-cc61-4c31-8ebf-ee87a067a50d)
 
-The plot above shows that the three most common outcomes for sick animals taken to the shelter are being transferred, subjected to euthanasia, or being adopted.
+The plot above shows that the three most common outcomes for sick animals taken to the shelter are being transferred, subjected to euthanasia, or being adopted. As noted earlier in the analysis of the distribution of outcomes, though only less animals were taken in for a euthanasia request, a relatively higher proportion ultimately underwent the said procedure. Through the graph above, it becomes evident that euthanasia has been a common outcome of sick animals, hence the increase in the proportion of euthanasia outcomes.
 
+Lastly, it is also of note that only a small percentage of sick animals died due to other causes apart from euthanasia. This is indicative of the shelter's efforts and commitment to caring for the animals and minimizing mortality rates as much as possible, staying true to its title of being the largest no-kill animal shelter in the US.
